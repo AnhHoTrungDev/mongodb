@@ -58,7 +58,7 @@ mongoexport -d mydb -c users -o testExport.json
 
 mongoexport -d mydb -c users --type=csv -o "home/anh/testExport.csv" \_id,user_name,password
 
-##### \_id,user_name,password => các trướng muốn export
+##### \_id,user_name,password => các trường muốn export
 
 - "_ubntu home/anh => file home ( cái này mặc định cấu hình sẽ tạo file mới) _"
 
@@ -73,6 +73,20 @@ mongoimport -d mybd -c users --file home/anh/testExport.json
 mongoimport -d mybd -c users --file "home/anh/testExport.csv" --headerline
 
 ## example
+
+## Export database (full database )
+
+"_/home/anh => link save data => ( bắt buộc )_"
+
+mongodump -d mydb -o "/home/anh"
+
+## Import database (full database )
+
+"_/home/anh/mydb_" => link save
+
+"_restore_" => name (gì cũng đc)
+
+mongorestore -d restore '/home/anh/mydb'
 
 #### insert data
 
