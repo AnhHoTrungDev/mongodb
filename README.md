@@ -72,8 +72,6 @@ mongoimport -d mybd -c users --file home/anh/testExport.json
 
 mongoimport -d mybd -c users --file "home/anh/testExport.csv" --headerline
 
-## example
-
 ## Export database (full database )
 
 "_/home/anh => link save data => ( bắt buộc )_"
@@ -87,6 +85,8 @@ mongodump -d mydb -o "/home/anh"
 "_restore_" => name (gì cũng đc)
 
 mongorestore -d restore '/home/anh/mydb'
+
+## example
 
 #### insert data
 
