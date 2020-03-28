@@ -25,12 +25,15 @@ db."name collection".insert({key:value,key:value})
 ## find data
 
 db."name collection".find()
+
 // display đẹp hơn
+
 db."name collection".find().pretty()
 
 ## drop
 
 // delete all data in databse
+
 db.dropDatabase()
 
 ## remove document
@@ -40,10 +43,15 @@ db."name collection".remove({key:value})
 ## Export Collection
 
 -d = database
+
 -c = collection
+
 -o = out
+
 testExport = nameFile export
+
 mydb = name database
+
 mongoexport -d mydb -c users -o testExport.json
 
 #### Export csv
