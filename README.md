@@ -1,98 +1,114 @@
-## start
+# \*dùng explain("executionStarts") xem thông tin cụ thể của truy vấn
 
-sudo systemctl start mongod || sudo systemctl daemon-reload
+## what is index
 
-## check mongodb run
+-index hổ trợ tìm kiếm trong mongodb
 
-sudo systemctl status mongod
+-Nếu không có index thì mongo sẽ scan toàn bộ các document => rất mất thời gian
 
-## stop
+-Index giúp giới hạn document phải scan giảm thời gian tìm kiếm truy vấn
 
-sudo systemctl stop mongod
+- Hổ trợ trên tất cả các field trong collection
 
-## Restart MongoDB
+- Luôn có field mặt định đc đánh index (\_id)
 
-sudo systemctl restart mongod
+#### điểm mạnh
 
-## create
+-Giảm thời gian query
 
-use "nameDatabase"
+-Giới hạn số document đc duyệt
 
-## insert
+-Tăng hiệu xuất
 
-db."name collection".insert({key:value,key:value})
+#### điêmt yếu
 
-## find data
+-Tốn thêm không gian lưu trữ cho index
 
-db."name collection".find()
+## Toán Tử
 
-// display đẹp hơn
+-$lt:... ex : db.test.find({"poin":($lt:5)}) tìm số bài test có điểm < 5
 
-db."name collection".find().pretty()
+-$gt:... ex : db.test.find({"poin":($gt:5)}) tìm số bài test có điểm > 5
 
-## drop
+-$all:... ex:db.inventory.find( { tags: { $all: ["red", "blank"] } } )
+tìm toàn bộ các document với array tag có giá trị red black
 
-// delete all data in databse
+## Embedded Documents
 
-db.dropDatabase()
+Khi thiết kế dữ liệu kiểu Embedded thì chúng ta không cần tạo ra nhiều collection để lưu trữ, mà sẽ lưu trữ tất cả vào một collection.
 
-## remove document
+link:=> https://viblo.asia/p/query-an-array-of-embedded-documents-in-mongodb-V3m5WBdWlO7
 
-db."name collection".remove({key:value})
+## Single Field Indexes
 
-## Export Collection
+-MongoDb hỗ trợ người dùng định nghĩa index theo chiều tăng dần hoặc giảm dần trên 1 trường của document
 
--d = database
+key = field đc gắn index với 1(tăng dần) và -1 (giảm dần)
 
--c = collection
+db.records.createIndex( { key: 1 } )
 
--o = out
+## Compound Indexes
 
-testExport = nameFile export
+-có thể đánh index cho nhiều field để giới hạn số document đc duyệt qua
 
-mydb = name database
+## Query on Embedded
 
-mongoexport -d mydb -c users -o testExport.json
+_*find with *_
 
-#### Export csv
+## Text Index
 
-mongoexport -d mydb -c users --type=csv -o "home/anh/testExport.csv" \_id,user_name,password
+-dùng để search string
 
-##### \_id,user_name,password => các trường muốn export
+## Unique Index
 
-- "_ubntu home/anh => file home ( cái này mặc định cấu hình sẽ tạo file mới) _"
+- đảm bảo nó ko trùng nhau
 
-## Import Collection
+## TTL Index (time -to - live)
 
-home/anh/testExport.json= link save file
+- xóa document sau 1 thời gian luw trữ
 
-mongoimport -d mybd -c users --file home/anh/testExport.json
+ex: db.users.createIndex({
+user_name:"text"
+..
 
-#### Import csv
-
-mongoimport -d mybd -c users --file "home/anh/testExport.csv" --headerline
-
-## Export database (full database )
-
-"_/home/anh => link save data => ( bắt buộc )_"
-
-mongodump -d mydb -o "/home/anh"
-
-## Import database (full database )
-
-"_/home/anh/mydb_" => link save
-
-"_restore_" => name (gì cũng đc)
-
-mongorestore -d restore '/home/anh/mydb'
-
-## example
-
-#### insert data
-
-db.users.insert({user_name: "Anh.Ho",
-password :"23123",
-email :"abc.com",
-skill:["nestJs","mogoDb","javascript","jquery","reactJs"],
-status: "active"
+},{
+name:"search*text" => \*\_custome name*_
+default:language: "none" => \_\_set ngôn ngữ mặc định_\*
 })
+
+## Sparse Index
+
+- Chỉ scan qua các document mà feild được đánh đấu index không null
+
+## Partial Index
+
+- xử dụng toán tử để giới hạn bản ghi phải scan qua => tăng hiệu xuất , giảm time thực thi
+
+link https://docs.mongodb.com/manual/core/index-partial/
+
+## multikey indexes
+
+mongo tạo index cho từng giá trị trong mãng hổ trợ truy vấn các trường là mãng
+
+-hạn chế không lập dc multikey nếu có nhiều trường có kiểu dữ liệu là mãng
+
+ex:db.coll.find(x :{ $elemMatch:{$gt :22,\$lt:55}})
+
+link https://medium.com/@bloomaman/mongodb-multikey-indexes-and-index-intersection-45f6b065408a
+
+ex: data =
+{item: 35, prices:[250,35]}
+......
+{item: 106, prices:[1500,65]}
+
+//tạo index
+
+db.ensureIndex({item:1, prices:1});
+
+//select
+
+db. coll. find({item: {$gt:12, $lt:65}});
+
+## link tài liệu
+
+https://drive.google.com/file/d/1dVN0UnIYD3VpZ6HGfSwZM5NLeEWLdKpM/view
